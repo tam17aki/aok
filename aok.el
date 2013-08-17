@@ -41,15 +41,15 @@
          (m-list (loop for buf in (buffer-list)
                        for m = (format "%s" (with-current-buffer buf major-mode))
                        do (unless (member m major-mode-list)
-                            (when (not (memq (aref (buffer-name buf) 0) (list ?\  ?\*)))
+                            (when (not (memq (aref (buffer-name buf) 0) (list ?\  ?\* ?\%)))
                               (push m major-mode-list))))))
     major-mode-list))
 
 ;;;###autoload
-(defun all-occur (rexp)
-  "Search all buffers for REXP."
+(defun all-occur (regexp)
+  "Search all buffers for REGEXP."
   (interactive "MRegexp: ")
-  (let* ((hides (list ?\  ?\*))
+  (let* ((hides (list ?\  ?\* ?\%))
          (cur-buf (current-buffer))
          (bufs (delq nil
                      (mapcar (lambda (buf)
@@ -58,35 +58,36 @@
                                    buf)))
                              (buffer-list))))
          (bufs-list (if (memq cur-buf bufs)
-                       bufs
-                     (cons cur-buf bufs))))
-    (multi-occur bufs-list rexp)))
+                        bufs
+                      (cons cur-buf bufs))))
+    (multi-occur bufs-list regexp)))
 
 ;; this one {c}/{sh}ould be a completing read that would read from a
 ;; predefined list of filetype extensions (without requiring a match).
+;; 拡張子の取得も補完で可能っぽい
 ;;;###autoload
-(defun type-occur (extension rexp)
+(defun type-occur (extension regexp)
   "EXTENSION denotes a filetype extension to search.
 Run occur in all buffers whose names match this type for REXP."
   (interactive "MExtension: \nMRegexp: ")
   (or (when (functionp 'multi-occur-by-filename-regexp)
-        (multi-occur-by-filename-regexp (concat ".*\." extension) rexp))
+        (multi-occur-by-filename-regexp (concat ".*\." extension) regexp))
       (when (functionp 'multi-occur-in-matching-buffers)
-        (multi-occur-in-matching-buffers (concat ".*\." extension) rexp))))
+        (multi-occur-in-matching-buffers (concat ".*\." extension) regexp))))
 
 ;;;###autoload
-(defun mode-occur (mode rexp)
-  "Search all buffers with major mode MODE for REXP."
+(defun mode-occur (mode regexp)
+  "Search all buffers with major mode MODE for REGEXP."
   (interactive (list (completing-read "Mode: " (aok-get-major-mode-list))
                      (read-string "Regexp: ")))
   (multi-occur (remove-if (lambda (buf)
                             (set-buffer buf)
                             (not (equal (format "%s" major-mode) mode)))
                           (buffer-list))
-               rexp))
+               regexp))
 
 ;;;###autoload
-(defun occur-select (more regx &optional nothing)
+(defun occur-select (more regexp &optional nothing)
   "select what you wan't to see occur"
   (interactive
    (cons
@@ -102,10 +103,10 @@ Run occur in all buffers whose names match this type for REXP."
     (occur-read-primary-args)))
   (let* ((choice (cadr more))
          (morearg (car more)))
-    (cond ((eq choice ?a) (all-occur regx))
-          ((eq choice ?t) (type-occur morearg regx))
-          ((eq choice ?m) (mode-occur morearg regx))
-          (t (occur regx)))))
+    (cond ((eq choice ?a) (all-occur regexp))
+          ((eq choice ?t) (type-occur morearg regexp))
+          ((eq choice ?m) (mode-occur morearg regexp))
+          (t (occur regexp)))))
 
 (provide 'aok)
 ;;; aok.el ends here
