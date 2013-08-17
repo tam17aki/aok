@@ -40,11 +40,10 @@
   (let* ((major-mode-list)
          (m-list (loop for buf in (buffer-list)
                        for m = (format "%s" (with-current-buffer buf major-mode))
-                       for name = (buffer-name buf)
                        do (unless (member m major-mode-list)
-                            (when (not (memq (aref name 0) (list ?\  ?\*)))
+                            (when (not (memq (aref (buffer-name buf) 0) (list ?\  ?\*)))
                               (push m major-mode-list))))))
-    major-mode-list))o
+    major-mode-list))
 
 ;;;###autoload
 (defun all-occur (rexp)
@@ -82,7 +81,7 @@ Run occur in all buffers whose names match this type for REXP."
                      (read-string "Regexp: ")))
   (multi-occur (remove-if (lambda (buf)
                             (set-buffer buf)
-                            (not (eq major-mode mode)))
+                            (not (equal (format "%s" major-mode) mode)))
                           (buffer-list))
                rexp))
 
