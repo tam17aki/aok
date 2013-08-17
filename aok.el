@@ -40,9 +40,11 @@
   (let* ((major-mode-list)
          (m-list (loop for buf in (buffer-list)
                        for m = (format "%s" (with-current-buffer buf major-mode))
+                       for name = (buffer-name buf)
                        do (unless (member m major-mode-list)
-                            (push m major-mode-list)))))
-    major-mode-list))
+                            (when (not (memq (aref name 0) (list ?\  ?\*)))
+                              (push m major-mode-list))))))
+    major-mode-list))o
 
 ;;;###autoload
 (defun all-occur (rexp)
