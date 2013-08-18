@@ -65,7 +65,6 @@
 
 ;; this one {c}/{sh}ould be a completing read that would read from a
 ;; predefined list of filetype extensions (without requiring a match).
-;; 拡張子の取得も補完で可能っぽい
 ;;;###autoload
 (defun type-occur (extension regexp)
   "EXTENSION denotes a filetype extension to search.
