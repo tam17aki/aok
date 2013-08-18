@@ -82,6 +82,9 @@ Run occur in all buffers whose names match this type for REGEXP."
                      (read-string "Regexp: ")))
   (multi-occur (aok-get-buffer-list (intern-soft mode)) regexp))
 
+(defvar aok-occur-select-prompt
+  "Occur in: [a]ll, [t]ype, [m]ode, or just this buffer(any other key)?")
+
 ;;;###autoload
 (defun occur-select (more regexp &optional nothing)
   "select what you wan't to see occur"
