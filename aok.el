@@ -36,18 +36,32 @@
 
 (eval-when-compile (require 'cl))
 
-(defvar aok-first-char-of-excluded-buffer-name '(" " "*" "%"))
+(defvar aok-buffer-name-exclusion-list '(" " "*" "%"))
+(defvar aok-buffer-name-inclusion-list '("*scratch*"))
+
+(defun aok-buffer-name-filter ()
+  (let* ((excludes (regexp-opt aok-buffer-name-exclusion-list))
+         (includes (regexp-opt aok-buffer-name-inclusion-list)))
+    (remove-if-not (lambda (buf)
+                     (let* ((name (buffer-name buf))
+                            (include-p (if (= (length includes) 0) nil
+                                         (numberp (string-match includes name))))
+                            (exclude-p (if (= (length excludes) 0) nil
+                                         (numberp (string-match excludes name))))
+                            (result (cond (include-p t)
+                                          ((not exclude-p) t)
+                                          (t nil))))
+                       result))
+                   (buffer-list))))
 
 (defun aok-get-buffer-list (&optional mode)
-  (let* ((hides (loop for str in aok-first-char-of-excluded-buffer-name
-                      collect (string-to-char str)))
-         (bufs (remove-if (lambda (buf)
-                            (or (memq (aref (buffer-name buf) 0) hides)
-                                (when mode
-                                  (with-current-buffer buf
-                                    (not (eq major-mode mode))))))
-                          (buffer-list))))
-    bufs))
+  (cond (mode
+         (remove-if (lambda (buf)
+                      (with-current-buffer buf
+                        (not (eq major-mode mode))))
+                    (aok-buffer-name-filter)))
+        (t
+         (aok-buffer-name-filter))))
 
 (defun aok-get-major-mode-list ()
   (let ((major-mode-list))
