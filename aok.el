@@ -83,16 +83,16 @@ Run occur in all buffers whose names match this type for REGEXP."
   (multi-occur (aok-get-buffer-list (intern-soft mode)) regexp))
 
 ;;;###autoload
-(defun occur-select (more regexp)
+(defun occur-select (more regexp &optional nothing)
   "select what you wan't to see occur"
   (interactive
    (cons
-    (let* ((choice (read-char
-                    "Occur in: [a]ll, [t]ype, [m]ode, or just this buffer(any other key)?"))
+    (let* ((choice (read-char aok-occur-select-prompt))
            (more  (list (cond ((eq choice ?a) nil)
                               ((eq choice ?t) (read-string "Extension: "))
                               ((eq choice ?m)
-                               (completing-read "Mode: " (aok-get-major-mode-list)))
+                               (completing-read "Mode: "
+                                                (aok-get-major-mode-list)))
                               (t ?o)))))
       (add-to-list 'more choice)
       (nreverse more))
