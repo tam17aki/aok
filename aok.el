@@ -36,31 +36,32 @@
 
 (eval-when-compile (require 'cl))
 
+(defvar aok-first-char-of-excluded-filename '(" " "*" "%"))
+
+(defun aok-get-buffer-list (&optional mode)
+  (let* ((hides (loop for str in aok-first-char-of-excluded-filename
+                      collect (string-to-char str)))
+         (bufs (remove-if (lambda (buf)
+                            (or (memq (aref (buffer-name buf) 0) hides)
+                                (when mode
+                                  (with-current-buffer buf
+                                    (not (eq major-mode mode))))))
+                          (buffer-list))))
+    bufs))
+
 (defun aok-get-major-mode-list ()
-  (let* ((major-mode-list)
-         (m-list (loop for buf in (buffer-list)
-                       for m = (format "%s" (with-current-buffer buf major-mode))
-                       do (unless (member m major-mode-list)
-                            (when (not (memq (aref (buffer-name buf) 0) (list ?\  ?\* ?\%)))
-                              (push m major-mode-list))))))
+  (let ((major-mode-list))
+    (loop for buf in (aok-get-buffer-list)
+          for m = (format "%s" (with-current-buffer buf major-mode))
+          unless (member m major-mode-list)
+          do (push m major-mode-list))
     major-mode-list))
 
 ;;;###autoload
 (defun all-occur (regexp)
   "Search all buffers for REGEXP."
   (interactive "MRegexp: ")
-  (let* ((hides (list ?\  ?\* ?\%))
-         (cur-buf (current-buffer))
-         (bufs (delq nil
-                     (mapcar (lambda (buf)
-                               (let ((name (buffer-name buf)))
-                                 (when (not (memq (aref name 0) hides))
-                                   buf)))
-                             (buffer-list))))
-         (bufs-list (if (memq cur-buf bufs)
-                        bufs
-                      (cons cur-buf bufs))))
-    (multi-occur bufs-list regexp)))
+  (multi-occur (aok-get-buffer-list) regexp))
 
 ;; this one {c}/{sh}ould be a completing read that would read from a
 ;; predefined list of filetype extensions (without requiring a match).
@@ -68,7 +69,7 @@
 ;;;###autoload
 (defun type-occur (extension regexp)
   "EXTENSION denotes a filetype extension to search.
-Run occur in all buffers whose names match this type for REXP."
+Run occur in all buffers whose names match this type for REGEXP."
   (interactive "MExtension: \nMRegexp: ")
   (or (when (functionp 'multi-occur-by-filename-regexp)
         (multi-occur-by-filename-regexp (concat ".*\." extension) regexp))
@@ -80,14 +81,10 @@ Run occur in all buffers whose names match this type for REXP."
   "Search all buffers with major mode MODE for REGEXP."
   (interactive (list (completing-read "Mode: " (aok-get-major-mode-list))
                      (read-string "Regexp: ")))
-  (multi-occur (remove-if (lambda (buf)
-                            (set-buffer buf)
-                            (not (equal (format "%s" major-mode) mode)))
-                          (buffer-list))
-               regexp))
+  (multi-occur (aok-get-buffer-list (intern-soft mode)) regexp))
 
 ;;;###autoload
-(defun occur-select (more regexp &optional nothing)
+(defun occur-select (more regexp)
   "select what you wan't to see occur"
   (interactive
    (cons
