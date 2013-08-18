@@ -75,9 +75,10 @@
 (defun all-occur (regexp arg)
   "Search all buffers for REGEXP."
   (interactive "MRegexp: \nP")
-  (if arg
-      (multi-occur (buffer-list) regexp)
-    (multi-occur (aok-get-buffer-list) regexp)))
+  (cond (arg
+         (multi-occur (buffer-list) regexp))
+        (t
+         (multi-occur (aok-get-buffer-list) regexp))))
 
 ;; this one {c}/{sh}ould be a completing read that would read from a
 ;; predefined list of filetype extensions (without requiring a match).
