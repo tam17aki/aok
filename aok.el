@@ -40,8 +40,8 @@
 (defvar aok-buffer-name-inclusion-list '("*scratch*"))
 
 (defun aok-buffer-name-filter ()
-  (let* ((excludes (regexp-opt aok-buffer-name-exclusion-list))
-         (includes (regexp-opt aok-buffer-name-inclusion-list)))
+  (let ((excludes (regexp-opt aok-buffer-name-exclusion-list))
+        (includes (regexp-opt aok-buffer-name-inclusion-list)))
     (remove-if-not (lambda (buf)
                      (let* ((name (buffer-name buf))
                             (include-p (if (= (length includes) 0) nil
