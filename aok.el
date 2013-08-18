@@ -119,7 +119,7 @@ Run occur in all buffers whose names match this type for REGEXP."
     (occur-read-primary-args)))
   (let* ((choice (cadr more))
          (morearg (car more)))
-    (cond ((eq choice ?a) (all-occur regexp))
+    (cond ((eq choice ?a) (all-occur regexp nil))
           ((eq choice ?t) (type-occur morearg regexp))
           ((eq choice ?m) (mode-occur morearg regexp))
           (t (occur regexp)))))
