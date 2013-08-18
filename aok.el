@@ -36,10 +36,10 @@
 
 (eval-when-compile (require 'cl))
 
-(defvar aok-first-char-of-excluded-filename '(" " "*" "%"))
+(defvar aok-first-char-of-excluded-buffer-name '(" " "*" "%"))
 
 (defun aok-get-buffer-list (&optional mode)
-  (let* ((hides (loop for str in aok-first-char-of-excluded-filename
+  (let* ((hides (loop for str in aok-first-char-of-excluded-buffer-name
                       collect (string-to-char str)))
          (bufs (remove-if (lambda (buf)
                             (or (memq (aref (buffer-name buf) 0) hides)
