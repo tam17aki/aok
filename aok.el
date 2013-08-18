@@ -36,7 +36,7 @@
 
 (eval-when-compile (require 'cl))
 
-(defvar aok-buffer-name-exclusion-list '(" " "*" "%"))
+(defvar aok-buffer-name-exclusion-list '(" " "*" "%" ":"))
 (defvar aok-buffer-name-inclusion-list '("*scratch*"))
 
 (defun aok-buffer-name-filter ()
