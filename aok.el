@@ -64,7 +64,7 @@
          (aok-buffer-name-filter))))
 
 (defun aok-get-major-mode-list ()
-  (let ((major-mode-list))
+  (let ((major-mode-list nil))
     (loop for buf in (aok-get-buffer-list)
           for m = (format "%s" (with-current-buffer buf major-mode))
           unless (member m major-mode-list)
