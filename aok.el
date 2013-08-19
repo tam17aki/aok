@@ -48,10 +48,10 @@
                                          (numberp (string-match includes name))))
                             (exclude-p (if (= (length excludes) 0) nil
                                          (numberp (string-match excludes name))))
-                            (result (cond (include-p t)
+                            (filter (cond (include-p t)
                                           ((not exclude-p) t)
                                           (t nil))))
-                       result))
+                       filter))
                    (buffer-list))))
 
 (defun aok-get-buffer-list (&optional mode)
