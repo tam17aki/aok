@@ -42,17 +42,17 @@
 (defun aok-buffer-name-filter ()
   (let ((excludes (regexp-opt aok-buffer-name-exclusion-list))
         (includes (regexp-opt aok-buffer-name-inclusion-list)))
-    (remove-if-not (lambda (buf)
-                     (let* ((name (buffer-name buf))
-                            (include-p (if (= (length includes) 0) nil
-                                         (numberp (string-match includes name))))
-                            (exclude-p (if (= (length excludes) 0) nil
-                                         (numberp (string-match excludes name))))
-                            (filter (cond (include-p t)
-                                          ((not exclude-p) t)
-                                          (t nil))))
-                       filter))
-                   (buffer-list))))
+    (remove-if (lambda (buf)
+                 (let* ((name (buffer-name buf))
+                        (include-p (if (= (length includes) 0) nil
+                                     (numberp (string-match includes name))))
+                        (exclude-p (if (= (length excludes) 0) nil
+                                     (numberp (string-match excludes name))))
+                        (filter (cond (include-p nil)
+                                      ((not exclude-p) nil)
+                                      (t t))))
+                   filter))
+               (buffer-list))))
 
 (defun aok-get-buffer-list (&optional mode)
   (cond (mode
