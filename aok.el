@@ -114,8 +114,8 @@ Run occur in all buffers whose names match this type for REGEXP."
       (add-to-list 'more choice)
       (nreverse more))
     (occur-read-primary-args)))
-  (let* ((choice (cadr more))
-         (morearg (car more)))
+  (let ((choice (cadr more))
+        (morearg (car more)))
     (case choice
       (?a (all-occur  morearg regexp))
       (?t (type-occur morearg regexp))
