@@ -72,9 +72,9 @@
     major-mode-list))
 
 ;;;###autoload
-(defun all-occur (regexp arg)
+(defun all-occur (arg regexp)
   "Search all buffers for REGEXP."
-  (interactive "MRegexp: \nP")
+  (interactive "P\nMRegexp: ")
   (cond (arg
          (multi-occur (buffer-list) regexp))
         (t
@@ -110,17 +110,17 @@ Run occur in all buffers whose names match this type for REGEXP."
                          (?t (read-string "Extension: "))
                          (?m (completing-read
                               "Mode: " (aok-get-major-mode-list)))
-                         (t ?o)))))
+                         (t t)))))
       (add-to-list 'more choice)
       (nreverse more))
     (occur-read-primary-args)))
   (let* ((choice (cadr more))
          (morearg (car more)))
     (case choice
-      (?a (all-occur regexp nil))
+      (?a (all-occur  morearg regexp))
       (?t (type-occur morearg regexp))
       (?m (mode-occur morearg regexp))
-      (t  (occur regexp)))))
+      (t (occur regexp)))))
 
 (provide 'aok)
 ;;; aok.el ends here
