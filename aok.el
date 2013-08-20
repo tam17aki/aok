@@ -87,10 +87,7 @@
   "EXTENSION denotes a filetype extension to search.
 Run occur in all buffers whose names match this type for REGEXP."
   (interactive "MExtension: \nMRegexp: ")
-  (or (when (functionp 'multi-occur-by-filename-regexp)
-        (multi-occur-by-filename-regexp (concat ".*\." extension) regexp))
-      (when (functionp 'multi-occur-in-matching-buffers)
-        (multi-occur-in-matching-buffers (concat ".*\." extension) regexp))))
+  (multi-occur-in-matching-buffers (concat ".*\." extension) regexp))
 
 ;;;###autoload
 (defun mode-occur (mode regexp)
@@ -100,7 +97,7 @@ Run occur in all buffers whose names match this type for REGEXP."
   (multi-occur (aok-get-buffer-list (intern-soft mode)) regexp))
 
 (defvar aok-occur-select-prompt
-  "Occur in: [a]ll, [t]ype, [m]ode, or just this buffer(any other key)?")
+  "Occur in: [a]ll, [t]ype, [m]ode, or just this buffer (any other key)?")
 
 ;;;###autoload
 (defun occur-select (more regexp &optional nothing)
