@@ -105,21 +105,22 @@ Run occur in all buffers whose names match this type for REGEXP."
   (interactive
    (cons
     (let* ((choice (read-char aok-occur-select-prompt))
-           (more  (list (cond ((eq choice ?a) nil)
-                              ((eq choice ?t) (read-string "Extension: "))
-                              ((eq choice ?m)
-                               (completing-read "Mode: "
-                                                (aok-get-major-mode-list)))
-                              (t ?o)))))
+           (more (list (case choice
+                         (?a nil)
+                         (?t (read-string "Extension: "))
+                         (?m (completing-read
+                              "Mode: " (aok-get-major-mode-list)))
+                         (t ?o)))))
       (add-to-list 'more choice)
       (nreverse more))
     (occur-read-primary-args)))
   (let* ((choice (cadr more))
          (morearg (car more)))
-    (cond ((eq choice ?a) (all-occur regexp nil))
-          ((eq choice ?t) (type-occur morearg regexp))
-          ((eq choice ?m) (mode-occur morearg regexp))
-          (t (occur regexp)))))
+    (case choice
+      (?a (all-occur regexp nil))
+      (?t (type-occur morearg regexp))
+      (?m (mode-occur morearg regexp))
+      (t  (occur regexp)))))
 
 (provide 'aok)
 ;;; aok.el ends here
