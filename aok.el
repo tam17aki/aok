@@ -120,7 +120,7 @@ Run occur in all buffers whose names match this type for REGEXP."
       (?a (all-occur  morearg regexp))
       (?t (type-occur morearg regexp))
       (?m (mode-occur morearg regexp))
-      (t (occur regexp)))))
+      (t  (occur regexp)))))
 
 (provide 'aok)
 ;;; aok.el ends here
