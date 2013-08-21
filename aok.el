@@ -36,11 +36,11 @@
 
 (eval-when-compile (require 'cl))
 
-(defvar aok-buffer-name-exclusion-list '(" " "*" "%" ":"))
+(defvar aok-buffer-name-exclusion-regexp (rx bol (or "*" "%" ":" " ")))
 (defvar aok-buffer-name-inclusion-list '("*scratch*"))
 
 (defun aok-buffer-name-filter ()
-  (let ((excludes (regexp-opt aok-buffer-name-exclusion-list))
+  (let ((excludes aok-buffer-name-exclusion-regexp)
         (includes (regexp-opt aok-buffer-name-inclusion-list)))
     (remove-if (lambda (buf)
                  (let* ((name (buffer-name buf))
@@ -110,7 +110,7 @@ Run occur in all buffers whose names match this type for REGEXP."
                          (?t (read-string "Extension: "))
                          (?m (completing-read
                               "Mode: " (aok-get-major-mode-list)))
-                         (t t)))))
+                         (t  t)))))
       (add-to-list 'more choice)
       (nreverse more))
     (occur-read-primary-args)))
