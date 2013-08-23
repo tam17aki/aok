@@ -37,7 +37,9 @@
 (eval-when-compile (require 'cl))
 
 (defvar aok-buffer-name-exclusion-regexp (rx bol (or "*" "%" ":" " ")))
-(defvar aok-buffer-name-inclusion-regexp (regexp-opt '("*scratch*")))
+(defvar aok-buffer-name-inclusion-list '("*scratch*" "*Packages*"))
+(defvar aok-buffer-name-inclusion-regexp
+  (regexp-opt aok-buffer-name-inclusion-list))
 
 (defun aok-buffer-name-filter ()
   (let ((excludes aok-buffer-name-exclusion-regexp)
