@@ -1,7 +1,7 @@
 ;;; aok.el --- various useful ways to do `multi-occur'
 ;; Version: 20130815.756
 
-;; Copyright (C) 2013 Akira Tamamori
+;; Copyright (C) 2013-2014 Akira Tamamori
 ;; Copyright (C) 2013 lynnux <lynnux.cn@gmail.com>
 ;; Copyright (C) 2004 Joe Corneli <jcorneli@math.utexas.edu>
 
@@ -89,7 +89,7 @@
   "EXTENSION denotes a filetype extension to search.
 Run occur in all buffers whose names match this type for REGEXP."
   (interactive "MExtension: \nMRegexp: ")
-  (multi-occur-in-matching-buffers (concat ".*\." extension) regexp))
+  (multi-occur-in-matching-buffers (concat ".*\." extension "$") regexp))
 
 ;;;###autoload
 (defun mode-occur (mode regexp)
